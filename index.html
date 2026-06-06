@@ -1263,22 +1263,29 @@ function editBooking(id) {
 
 async function saveBooking() {
   const id = document.getElementById("bk-id").value;
-  const payload = {
-    firstName: document.getElementById("bk-firstname").value,
-    lastName: document.getElementById("bk-lastname").value,
+  const roomId = parseInt(document.getElementById("bk-room").value) || undefined;
+
+  // Beds24 API V2 requires array format for POST/PUT /bookings
+  const booking = {
+    roomId: roomId,
     arrival: document.getElementById("bk-checkin").value,
     departure: document.getElementById("bk-checkout").value,
-    roomId: parseInt(document.getElementById("bk-room").value) || undefined,
     numAdult: parseInt(document.getElementById("bk-guests").value) || 2,
-    message: document.getElementById("bk-notes").value,
-    status: "confirmed"
+    firstName: document.getElementById("bk-firstname").value,
+    lastName: document.getElementById("bk-lastname").value,
+    notes: document.getElementById("bk-notes").value,
+    status: "confirmed",
+    channel: "direct",
+    referer: "PumpkinResort",
   };
-  if (id) payload.id = parseInt(id);
+  if (id) booking.id = parseInt(id);
 
   try {
     const method = id ? "PUT" : "POST";
     const path = id ? `/bookings/${id}` : "/bookings";
-    await api(path, method, payload);
+    // Beds24 API V2 expects array for POST, object with id for PUT
+    const body = method === "POST" ? [booking] : booking;
+    await api(path, method, body);
     showToast(id ? "แก้ไขการจองสำเร็จ" : "เพิ่มการจองสำเร็จ", "success");
     closeModal("booking-modal");
     await loadAllBookings();
