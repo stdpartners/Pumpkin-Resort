@@ -906,7 +906,7 @@ function populateRoomSelect() {
   const sel = document.getElementById("bk-room");
   sel.innerHTML = "";
   properties.forEach(prop => {
-    const rooms = prop.roomTypes || prop.rooms || [];
+    const rooms = prop.rooms || [];
     rooms.forEach(room => {
       const opt = document.createElement("option");
       opt.value = room.id;
@@ -968,7 +968,7 @@ function getStatusBadge(s) {
 function getRoomName(booking) {
   const roomId = booking.roomId || booking.unitId;
   for (const p of properties) {
-    const rooms = p.roomTypes || p.rooms || [];
+    const rooms = p.rooms || [];
     for (const r of rooms) {
       if (r.id == roomId) return `${p.name} — ${r.name}`;
     }
@@ -1177,10 +1177,12 @@ async function loadInventory() {
   document.getElementById("inventory-content").innerHTML = `<div class="loading">กำลังโหลด...</div>`;
   try {
     const data = await api(`/inventory/rooms/availability?startDate=${date}&endDate=${date}`);
-    const items = data.data || data.roomAvailability || data.inventory || (Array.isArray(data) ? data : []);
+    const items = data.data || (Array.isArray(data) ? data : []);
     renderInventory(items, date);
-    // Update stat
-    const totalAvail = items.reduce((s, i) => s + (i.availability || 0), 0);
+    const totalAvail = items.reduce((s, item) => {
+      const avail = item.availability?.[date];
+      return s + (avail === true ? 1 : 0);
+    }, 0);
     document.getElementById("stat-avail").textContent = totalAvail;
   } catch {
     document.getElementById("inventory-content").innerHTML = `<div class="empty-state"><div class="emoji">⚠️</div>ไม่สามารถโหลด inventory ได้</div>`;
@@ -1194,16 +1196,22 @@ function renderInventory(items, date) {
   }
   const html = `<div class="inventory-grid">` +
     items.map(item => {
-      const avail = item.availability ?? item.numAvailable ?? 0;
-      const total = item.numRooms ?? item.totalRooms ?? avail;
-      const booked = total - avail;
-      const cls = avail === 0 ? "full" : avail < total / 2 ? "partial" : "available";
-      const roomName = item.roomName || item.name || `ห้อง #${item.roomId || item.id}`;
+      const roomName = item.name || `ห้อง #${item.roomId}`;
+      let total = 1;
+      for (const p of properties) {
+        const rt = (p.roomTypes || p.rooms || []).find(r => r.id == item.roomId);
+        if (rt) { total = rt.qty || 1; break; }
+      }
+      const availVal = item.availability?.[date];
+      const isAvail = availVal === true;
+      const cls = isAvail ? "available" : "full";
+      const availText = isAvail ? total : 0;
+      const bookedText = isAvail ? 0 : total;
       return `<div class="inv-card ${cls}">
         <div class="inv-room-name">${roomName}</div>
-        <div class="inv-avail ${cls}">${avail}</div>
+        <div class="inv-avail ${cls}">${availText}</div>
         <div class="inv-total">ว่าง จาก ${total} ห้อง</div>
-        <div style="margin-top:8px;font-size:11px;color:var(--text-muted);">จอง ${booked} ห้อง</div>
+        <div style="margin-top:8px;font-size:11px;color:var(--text-muted);">จอง ${bookedText} ห้อง</div>
       </div>`;
     }).join("") + `</div>`;
   document.getElementById("inventory-content").innerHTML = html;
@@ -1263,29 +1271,22 @@ function editBooking(id) {
 
 async function saveBooking() {
   const id = document.getElementById("bk-id").value;
-  const roomId = parseInt(document.getElementById("bk-room").value) || undefined;
-
-  // Beds24 API V2 requires array format for POST/PUT /bookings
-  const booking = {
-    roomId: roomId,
-    arrival: document.getElementById("bk-checkin").value,
-    departure: document.getElementById("bk-checkout").value,
-    numAdult: parseInt(document.getElementById("bk-guests").value) || 2,
+  const payload = {
     firstName: document.getElementById("bk-firstname").value,
     lastName: document.getElementById("bk-lastname").value,
-    notes: document.getElementById("bk-notes").value,
-    status: "confirmed",
-    channel: "direct",
-    referer: "PumpkinResort",
+    arrival: document.getElementById("bk-checkin").value,
+    departure: document.getElementById("bk-checkout").value,
+    roomId: parseInt(document.getElementById("bk-room").value) || undefined,
+    numAdult: parseInt(document.getElementById("bk-guests").value) || 2,
+    message: document.getElementById("bk-notes").value,
+    status: "confirmed"
   };
-  if (id) booking.id = parseInt(id);
+  if (id) payload.id = parseInt(id);
 
   try {
     const method = id ? "PUT" : "POST";
     const path = id ? `/bookings/${id}` : "/bookings";
-    // Beds24 API V2 expects array for POST, object with id for PUT
-    const body = method === "POST" ? [booking] : booking;
-    await api(path, method, body);
+    await api(path, method, payload);
     showToast(id ? "แก้ไขการจองสำเร็จ" : "เพิ่มการจองสำเร็จ", "success");
     closeModal("booking-modal");
     await loadAllBookings();
