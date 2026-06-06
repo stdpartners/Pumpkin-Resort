@@ -906,7 +906,7 @@ function populateRoomSelect() {
   const sel = document.getElementById("bk-room");
   sel.innerHTML = "";
   properties.forEach(prop => {
-    const rooms = prop.rooms || [];
+    const rooms = prop.roomTypes || prop.rooms || [];
     rooms.forEach(room => {
       const opt = document.createElement("option");
       opt.value = room.id;
@@ -968,7 +968,7 @@ function getStatusBadge(s) {
 function getRoomName(booking) {
   const roomId = booking.roomId || booking.unitId;
   for (const p of properties) {
-    const rooms = p.rooms || [];
+    const rooms = p.roomTypes || p.rooms || [];
     for (const r of rooms) {
       if (r.id == roomId) return `${p.name} — ${r.name}`;
     }
