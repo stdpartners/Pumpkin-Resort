@@ -1176,7 +1176,7 @@ async function loadInventory() {
   const date = dateEl.value || fmtDate(today);
   document.getElementById("inventory-content").innerHTML = `<div class="loading">กำลังโหลด...</div>`;
   try {
-    const data = await api(`/inventory?startDate=${date}&endDate=${date}`);
+    const data = await api(`/inventory/rooms/availability?startDate=${date}&endDate=${date}`);
     const items = data.data || data.roomAvailability || data.inventory || (Array.isArray(data) ? data : []);
     renderInventory(items, date);
     // Update stat
