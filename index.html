@@ -897,7 +897,7 @@ async function initApp() {
 async function loadProperties() {
   try {
     const data = await api("/properties?includeAllRooms=true");
-    properties = data.properties || data || [];
+    properties = data.data || data.properties || (Array.isArray(data) ? data : []);
     populateRoomSelect();
   } catch { properties = []; }
 }
@@ -929,7 +929,7 @@ async function loadAllBookings() {
     const futureDate = new Date(today);
     futureDate.setMonth(futureDate.getMonth() + 3);
     const data = await api(`/bookings?arrivalFrom=${sub30days()}&arrivalTo=${fmtDate(futureDate)}&numResults=300`);
-    allBookings = data.bookings || data || [];
+    allBookings = data.data || data.bookings || (Array.isArray(data) ? data : []);
     renderBookingsTable(allBookings);
     updateStats();
     renderCheckinOut();
@@ -1177,7 +1177,7 @@ async function loadInventory() {
   document.getElementById("inventory-content").innerHTML = `<div class="loading">กำลังโหลด...</div>`;
   try {
     const data = await api(`/inventory?startDate=${date}&endDate=${date}`);
-    const items = data.roomAvailability || data.inventory || data || [];
+    const items = data.data || data.roomAvailability || data.inventory || (Array.isArray(data) ? data : []);
     renderInventory(items, date);
     // Update stat
     const totalAvail = items.reduce((s, i) => s + (i.availability || 0), 0);
