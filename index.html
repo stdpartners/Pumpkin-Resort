@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pumpkin Resort — Staff Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --pumpkin: #D4621A;
+  --pumpkin-light: #F2853A;
+  --pumpkin-dark: #A34810;
+  --wood: #8B6340;
+  --wood-light: #C4956A;
+  --wood-dark: #5C3D1E;
+  --cream: #FAF4EC;
+  --cream-dark: #F0E4D0;
+  --cream-darker: #DEC9A8;
+  --text-primary: #2C1A0E;
+  --text-secondary: #6B4A2A;
+  --text-muted: #9B7355;
+  --white: #FFFFFF;
+  --success: #3D7A3D;
+  --success-bg: #EAF4EA;
+  --danger: #8B1A1A;
+  --danger-bg: #F9EAEA;
+  --warning: #7A5A0A;
+  --warning-bg: #FFF8E6;
+  --info: #1A4A7A;
+  --info-bg: #E6F0FA;
+  --shadow: 0 2px 12px rgba(44,26,14,0.10);
+  --shadow-lg: 0 6px 32px rgba(44,26,14,0.14);
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Sarabun', sans-serif;
+  background: var(--cream);
+  color: var(--text-primary);
+  min-height: 100vh;
+  font-size: 15px;
+}
+
+/* ── Login Screen ───────────────────────────────────────── */
+#login-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(160deg, #2C1A0E 0%, #5C3D1E 50%, #8B6340 100%);
+}
+.login-box {
+  background: var(--cream);
+  border-radius: 20px;
+  padding: 48px 40px;
+  width: 100%;
+  max-width: 380px;
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+}
+.login-logo {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: var(--pumpkin);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  font-size: 40px;
+}
+.login-box h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+.login-box p {
+  color: var(--text-muted);
+  font-size: 13px;
+  margin-bottom: 28px;
+}
+.login-box input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid var(--cream-darker);
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  font-family: 'Sarabun', sans-serif;
+  background: var(--white);
+  color: var(--text-primary);
+  outline: none;
+  margin-bottom: 12px;
+  transition: border-color 0.2s;
+}
+.login-box input:focus { border-color: var(--pumpkin); }
+.btn-login {
+  width: 100%;
+  padding: 12px;
+  background: var(--pumpkin);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  font-family: 'Sarabun', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-login:hover { background: var(--pumpkin-dark); }
+.login-error {
+  color: var(--danger);
+  font-size: 13px;
+  margin-top: 10px;
+  display: none;
+}
+
+/* ── App Shell ──────────────────────────────────────────── */
+#app { display: none; min-height: 100vh; }
+
+.topbar {
+  background: var(--wood-dark);
+  color: white;
+  padding: 0 24px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  color: var(--cream);
+}
+.topbar-brand span { font-size: 22px; }
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.topbar-time {
+  font-size: 13px;
+  color: var(--cream-darker);
+}
+.btn-logout {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: white;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: 'Sarabun', sans-serif;
+  transition: background 0.2s;
+}
+.btn-logout:hover { background: rgba(255,255,255,0.2); }
+
+.nav-tabs {
+  background: var(--wood);
+  display: flex;
+  padding: 0 24px;
+  gap: 4px;
+}
+.nav-tab {
+  padding: 10px 18px;
+  color: rgba(255,255,255,0.65);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.nav-tab:hover { color: white; }
+.nav-tab.active {
+  color: var(--cream);
+  border-bottom-color: var(--pumpkin-light);
+}
+
+.main-content {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ── Cards & Panels ─────────────────────────────────────── */
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px 24px;
+  border: 1px solid var(--cream-dark);
+}
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 17px;
+  color: var(--text-primary);
+}
+
+/* ── Buttons ────────────────────────────────────────────── */
+.btn {
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-family: 'Sarabun', sans-serif;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all 0.18s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn-primary { background: var(--pumpkin); color: white; }
+.btn-primary:hover { background: var(--pumpkin-dark); }
+.btn-success { background: var(--success); color: white; }
+.btn-success:hover { background: #2a5a2a; }
+.btn-danger { background: var(--danger); color: white; }
+.btn-danger:hover { background: #6b1010; }
+.btn-outline {
+  background: transparent;
+  color: var(--pumpkin);
+  border: 1.5px solid var(--pumpkin);
+}
+.btn-outline:hover { background: var(--pumpkin); color: white; }
+.btn-sm { padding: 5px 10px; font-size: 12px; }
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--cream-darker);
+}
+.btn-ghost:hover { background: var(--cream-dark); }
+
+/* ── Badges ─────────────────────────────────────────────── */
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.badge-confirmed { background: var(--success-bg); color: var(--success); }
+.badge-checkedin { background: var(--info-bg); color: var(--info); }
+.badge-checkedout { background: var(--cream-dark); color: var(--text-muted); }
+.badge-cancelled { background: var(--danger-bg); color: var(--danger); }
+.badge-pending { background: var(--warning-bg); color: var(--warning); }
+
+/* ── Table ──────────────────────────────────────────────── */
+.table-wrap { overflow-x: auto; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+th {
+  background: var(--cream);
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1.5px solid var(--cream-darker);
+}
+td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--cream-dark);
+  color: var(--text-primary);
+  vertical-align: middle;
+}
+tr:hover td { background: var(--cream); }
+tr:last-child td { border-bottom: none; }
+
+/* ── Forms ──────────────────────────────────────────────── */
+.form-group { margin-bottom: 14px; }
+.form-group label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid var(--cream-darker);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-family: 'Sarabun', sans-serif;
+  background: var(--white);
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--pumpkin);
+}
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* ── Modal ──────────────────────────────────────────────── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(44,26,14,0.55);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--cream);
+  border-radius: 16px;
+  padding: 28px 32px;
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+}
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.modal-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+}
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: var(--text-muted);
+  line-height: 1;
+}
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--cream-dark);
+}
+
+/* ── Calendar ───────────────────────────────────────────── */
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+.cal-day-name {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  padding: 6px 0;
+  text-transform: uppercase;
+}
+.cal-day {
+  min-height: 72px;
+  padding: 4px 6px;
+  border: 1px solid var(--cream-dark);
+  border-radius: 6px;
+  cursor: pointer;
+  background: var(--white);
+  transition: background 0.15s;
+  position: relative;
+}
+.cal-day:hover { background: var(--cream); }
+.cal-day.other-month { opacity: 0.35; }
+.cal-day.today { border-color: var(--pumpkin); }
+.cal-date {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.cal-day.today .cal-date {
+  background: var(--pumpkin);
+  color: white;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+}
+.cal-booking-pill {
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background: var(--pumpkin);
+  color: white;
+  cursor: pointer;
+}
+.cal-booking-pill.checkout-pill { background: var(--wood-light); }
+
+/* ── Stats row ──────────────────────────────────────────── */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.stat-card {
+  background: var(--white);
+  border: 1px solid var(--cream-dark);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  box-shadow: var(--shadow);
+}
+.stat-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+.stat-value {
+  font-size: 28px;
+  font-weight: 600;
+  font-family: 'Playfair Display', serif;
+  color: var(--pumpkin);
+}
+.stat-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+/* ── Inventory ──────────────────────────────────────────── */
+.inventory-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 14px;
+}
+.inv-card {
+  background: var(--white);
+  border: 1.5px solid var(--cream-dark);
+  border-radius: var(--radius);
+  padding: 16px;
+  text-align: center;
+  transition: border-color 0.2s;
+}
+.inv-card.available { border-color: var(--success); }
+.inv-card.partial { border-color: var(--warning); }
+.inv-card.full { border-color: var(--danger); }
+.inv-room-name {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+.inv-avail {
+  font-size: 28px;
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.inv-avail.available { color: var(--success); }
+.inv-avail.partial { color: var(--warning); }
+.inv-avail.full { color: var(--danger); }
+.inv-total { font-size: 12px; color: var(--text-muted); }
+
+/* ── Loading / Error / Empty ────────────────────────────── */
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+.loading::before {
+  content: '';
+  display: block;
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--cream-dark);
+  border-top-color: var(--pumpkin);
+  border-radius: 50%;
+  margin: 0 auto 12px;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.empty-state {
+  text-align: center;
+  padding: 48px;
+  color: var(--text-muted);
+}
+.empty-state .emoji { font-size: 40px; margin-bottom: 12px; }
+
+/* ── Search bar ─────────────────────────────────────────── */
+.search-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.search-bar input, .search-bar select {
+  padding: 8px 12px;
+  border: 1.5px solid var(--cream-darker);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-family: 'Sarabun', sans-serif;
+  background: var(--white);
+  color: var(--text-primary);
+  outline: none;
+}
+.search-bar input:focus, .search-bar select:focus { border-color: var(--pumpkin); }
+.search-bar input { flex: 1; min-width: 180px; }
+
+/* ── Toast ──────────────────────────────────────────────── */
+#toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  padding: 12px 20px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+  z-index: 999;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s;
+  pointer-events: none;
+}
+#toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+#toast.success { background: var(--success); }
+#toast.error { background: var(--danger); }
+#toast.info { background: var(--info); }
+
+/* ── Tabs content ───────────────────────────────────────── */
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .main-content { padding: 14px; }
+  .form-row { grid-template-columns: 1fr; }
+  .nav-tab { padding: 10px 12px; font-size: 13px; }
+  .topbar-time { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── LOGIN SCREEN ─────────────────────────────────────── -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">🎃</div>
+    <h1>Pumpkin Resort</h1>
+    <p>Staff Portal — กรุณาเข้าสู่ระบบ</p>
+    <input type="password" id="login-password" placeholder="รหัสผ่าน" />
+    <button class="btn-login" onclick="doLogin()">เข้าสู่ระบบ</button>
+    <div class="login-error" id="login-error">รหัสผ่านไม่ถูกต้อง</div>
+  </div>
+</div>
+
+<!-- ── MAIN APP ──────────────────────────────────────────── -->
+<div id="app">
+  <div class="topbar">
+    <div class="topbar-brand">
+      <span>🎃</span> Pumpkin Resort
+    </div>
+    <div class="topbar-right">
+      <div class="topbar-time" id="clock"></div>
+      <button class="btn-logout" onclick="doLogout()">ออกจากระบบ</button>
+    </div>
+  </div>
+
+  <div class="nav-tabs">
+    <div class="nav-tab active" onclick="switchTab('dashboard')">ภาพรวม</div>
+    <div class="nav-tab" onclick="switchTab('bookings')">การจอง</div>
+    <div class="nav-tab" onclick="switchTab('checkinout')">Check-in / Out</div>
+    <div class="nav-tab" onclick="switchTab('calendar')">ปฏิทิน</div>
+    <div class="nav-tab" onclick="switchTab('inventory')">Inventory</div>
+  </div>
+
+  <div class="main-content">
+
+    <!-- ── DASHBOARD ──────────────────────────────────────── -->
+    <div id="tab-dashboard" class="tab-content active">
+      <div class="stats-row" id="stats-row">
+        <div class="stat-card"><div class="stat-label">วันนี้ Check-in</div><div class="stat-value" id="stat-checkin">—</div></div>
+        <div class="stat-card"><div class="stat-label">วันนี้ Check-out</div><div class="stat-value" id="stat-checkout">—</div></div>
+        <div class="stat-card"><div class="stat-label">Booking ใหม่ (7 วัน)</div><div class="stat-value" id="stat-new">—</div></div>
+        <div class="stat-card"><div class="stat-label">ห้องว่างวันนี้</div><div class="stat-value" id="stat-avail">—</div></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Check-in วันนี้</div>
+          </div>
+          <div id="today-checkins" class="loading">กำลังโหลด...</div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Check-out วันนี้</div>
+          </div>
+          <div id="today-checkouts" class="loading">กำลังโหลด...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── BOOKINGS ────────────────────────────────────────── -->
+    <div id="tab-bookings" class="tab-content">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">การจองทั้งหมด</div>
+          <button class="btn btn-primary" onclick="openAddBooking()">+ เพิ่มการจอง</button>
+        </div>
+        <div class="search-bar">
+          <input type="text" id="search-name" placeholder="ค้นหาชื่อผู้จอง..." oninput="filterBookings()" />
+          <input type="date" id="search-from" onchange="filterBookings()" />
+          <span style="color:var(--text-muted);font-size:13px;">ถึง</span>
+          <input type="date" id="search-to" onchange="filterBookings()" />
+          <select id="search-status" onchange="filterBookings()">
+            <option value="">สถานะทั้งหมด</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="checkedin">Checked-in</option>
+            <option value="checkedout">Checked-out</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+        <div class="table-wrap">
+          <div id="bookings-table"><div class="loading">กำลังโหลด...</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CHECK-IN / OUT ──────────────────────────────────── -->
+    <div id="tab-checkinout" class="tab-content">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;">
+        <div class="card">
+          <div class="card-header"><div class="card-title">🟢 Check-in วันนี้</div></div>
+          <div id="checkin-list" class="loading">กำลังโหลด...</div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">🔵 Check-out วันนี้</div></div>
+          <div id="checkout-list" class="loading">กำลังโหลด...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CALENDAR ────────────────────────────────────────── -->
+    <div id="tab-calendar" class="tab-content">
+      <div class="card">
+        <div class="calendar-header">
+          <button class="btn btn-ghost btn-sm" onclick="prevMonth()">← ก่อนหน้า</button>
+          <div class="card-title" id="cal-title" style="font-family:'Playfair Display',serif;"></div>
+          <button class="btn btn-ghost btn-sm" onclick="nextMonth()">ถัดไป →</button>
+        </div>
+        <div class="calendar-grid" id="cal-day-names"></div>
+        <div class="calendar-grid" id="calendar-body" style="margin-top:4px;"></div>
+      </div>
+    </div>
+
+    <!-- ── INVENTORY ───────────────────────────────────────── -->
+    <div id="tab-inventory" class="tab-content">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Inventory ห้องพัก</div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input type="date" id="inv-date" onchange="loadInventory()" style="padding:6px 10px;border:1.5px solid var(--cream-darker);border-radius:var(--radius-sm);font-size:13px;font-family:'Sarabun',sans-serif;" />
+            <button class="btn btn-outline btn-sm" onclick="loadInventory()">โหลดใหม่</button>
+          </div>
+        </div>
+        <div id="inventory-content" class="loading">กำลังโหลด...</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── BOOKING MODAL ─────────────────────────────────────── -->
+<div class="modal-overlay" id="booking-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">เพิ่มการจอง</div>
+      <button class="modal-close" onclick="closeModal('booking-modal')">×</button>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>ชื่อผู้จอง (First)</label>
+        <input type="text" id="bk-firstname" placeholder="ชื่อ" />
+      </div>
+      <div class="form-group">
+        <label>นามสกุล (Last)</label>
+        <input type="text" id="bk-lastname" placeholder="นามสกุล" />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Check-in</label>
+        <input type="date" id="bk-checkin" />
+      </div>
+      <div class="form-group">
+        <label>Check-out</label>
+        <input type="date" id="bk-checkout" />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>ห้อง (Room ID)</label>
+        <select id="bk-room"></select>
+      </div>
+      <div class="form-group">
+        <label>จำนวนผู้เข้าพัก</label>
+        <input type="number" id="bk-guests" value="2" min="1" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label>หมายเหตุ</label>
+      <textarea id="bk-notes" rows="3" placeholder="หมายเหตุเพิ่มเติม..."></textarea>
+    </div>
+    <input type="hidden" id="bk-id" />
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('booking-modal')">ยกเลิก</button>
+      <button class="btn btn-primary" id="modal-save-btn" onclick="saveBooking()">บันทึก</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── DETAIL MODAL ──────────────────────────────────────── -->
+<div class="modal-overlay" id="detail-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">รายละเอียดการจอง</div>
+      <button class="modal-close" onclick="closeModal('detail-modal')">×</button>
+    </div>
+    <div id="detail-content"></div>
+    <div class="modal-footer" id="detail-footer"></div>
+  </div>
+</div>
+
+<!-- ── TOAST ─────────────────────────────────────────────── -->
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// CONFIG — แก้ตรงนี้
+// ═══════════════════════════════════════════════════════════
+const WORKER_URL = "https://pumpkin-api.stonebridge-co-ltd.workers.dev";
+// ═══════════════════════════════════════════════════════════
+
+let authToken = sessionStorage.getItem("pumpkin_token") || null;
+let allBookings = [];
+let properties = [];
+let calYear, calMonth;
+
+const today = new Date();
+calYear = today.getFullYear();
+calMonth = today.getMonth();
+
+// ── Auth ────────────────────────────────────────────────────
+async function doLogin() {
+  const pw = document.getElementById("login-password").value;
+  if (!pw) return;
+  try {
+    const res = await fetch(`${WORKER_URL}/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password: pw })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+    authToken = data.token;
+    sessionStorage.setItem("pumpkin_token", authToken);
+    document.getElementById("login-screen").style.display = "none";
+    document.getElementById("app").style.display = "block";
+    initApp();
+  } catch {
+    const el = document.getElementById("login-error");
+    el.style.display = "block";
+    setTimeout(() => el.style.display = "none", 3000);
+  }
+}
+
+document.getElementById("login-password").addEventListener("keydown", e => {
+  if (e.key === "Enter") doLogin();
+});
+
+function doLogout() {
+  authToken = null;
+  sessionStorage.removeItem("pumpkin_token");
+  document.getElementById("app").style.display = "none";
+  document.getElementById("login-screen").style.display = "flex";
+  document.getElementById("login-password").value = "";
+}
+
+// Auto-login if token exists
+if (authToken) {
+  document.getElementById("login-screen").style.display = "none";
+  document.getElementById("app").style.display = "block";
+  initApp();
+}
+
+// ── API helper ──────────────────────────────────────────────
+async function api(path, method = "GET", body = null) {
+  const opts = {
+    method,
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${authToken}`
+    }
+  };
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(`${WORKER_URL}${path}`, opts);
+  if (res.status === 401) { doLogout(); throw new Error("Session หมดอายุ"); }
+  return res.json();
+}
+
+// ── Toast ────────────────────────────────────────────────────
+function showToast(msg, type = "success") {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className = `show ${type}`;
+  setTimeout(() => t.className = "", 3000);
+}
+
+// ── Clock ────────────────────────────────────────────────────
+function updateClock() {
+  const now = new Date();
+  document.getElementById("clock").textContent =
+    now.toLocaleDateString("th-TH", { weekday: "short", day: "numeric", month: "short" }) +
+    " " + now.toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit" });
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ── Init ─────────────────────────────────────────────────────
+async function initApp() {
+  await loadProperties();
+  await loadAllBookings();
+  renderDashboard();
+  renderCalendar();
+  const invDate = document.getElementById("inv-date");
+  invDate.value = fmtDate(today);
+  loadInventory();
+}
+
+// ── Properties ───────────────────────────────────────────────
+async function loadProperties() {
+  try {
+    const data = await api("/properties?includeAllRooms=true");
+    properties = data.properties || data || [];
+    populateRoomSelect();
+  } catch { properties = []; }
+}
+
+function populateRoomSelect() {
+  const sel = document.getElementById("bk-room");
+  sel.innerHTML = "";
+  properties.forEach(prop => {
+    const rooms = prop.rooms || [];
+    rooms.forEach(room => {
+      const opt = document.createElement("option");
+      opt.value = room.id;
+      opt.textContent = `${prop.name} — ${room.name}`;
+      sel.appendChild(opt);
+    });
+    if (!rooms.length) {
+      const opt = document.createElement("option");
+      opt.value = prop.id;
+      opt.textContent = prop.name;
+      sel.appendChild(opt);
+    }
+  });
+}
+
+// ── Bookings ─────────────────────────────────────────────────
+async function loadAllBookings() {
+  try {
+    const todayStr = fmtDate(today);
+    const futureDate = new Date(today);
+    futureDate.setMonth(futureDate.getMonth() + 3);
+    const data = await api(`/bookings?arrivalFrom=${sub30days()}&arrivalTo=${fmtDate(futureDate)}&numResults=300`);
+    allBookings = data.bookings || data || [];
+    renderBookingsTable(allBookings);
+    updateStats();
+    renderCheckinOut();
+  } catch (e) {
+    document.getElementById("bookings-table").innerHTML = `<div class="empty-state"><div class="emoji">⚠️</div>ไม่สามารถโหลดข้อมูลได้</div>`;
+  }
+}
+
+function sub30days() {
+  const d = new Date(today);
+  d.setDate(d.getDate() - 30);
+  return fmtDate(d);
+}
+
+function fmtDate(d) {
+  return d.toISOString().split("T")[0];
+}
+
+function fmtDateTH(str) {
+  if (!str) return "—";
+  const d = new Date(str);
+  return d.toLocaleDateString("th-TH", { day: "numeric", month: "short", year: "numeric" });
+}
+
+function getStatusBadge(s) {
+  const map = {
+    confirmed: '<span class="badge badge-confirmed">Confirmed</span>',
+    checkedin: '<span class="badge badge-checkedin">Checked-in</span>',
+    checkedout: '<span class="badge badge-checkedout">Checked-out</span>',
+    cancelled: '<span class="badge badge-cancelled">Cancelled</span>',
+    pending: '<span class="badge badge-pending">Pending</span>'
+  };
+  return map[(s || "").toLowerCase()] || `<span class="badge" style="background:var(--cream-dark);color:var(--text-muted);">${s || "—"}</span>`;
+}
+
+function getRoomName(booking) {
+  const roomId = booking.roomId || booking.unitId;
+  for (const p of properties) {
+    const rooms = p.rooms || [];
+    for (const r of rooms) {
+      if (r.id == roomId) return `${p.name} — ${r.name}`;
+    }
+    if (p.id == roomId) return p.name;
+  }
+  return roomId ? `ห้อง #${roomId}` : "—";
+}
+
+function renderBookingsTable(list) {
+  if (!list.length) {
+    document.getElementById("bookings-table").innerHTML = `<div class="empty-state"><div class="emoji">📭</div>ไม่พบการจอง</div>`;
+    return;
+  }
+  let html = `<table><thead><tr>
+    <th>ID</th><th>ผู้จอง</th><th>ห้อง</th><th>Check-in</th><th>Check-out</th><th>สถานะ</th><th></th>
+  </tr></thead><tbody>`;
+  list.forEach(b => {
+    const name = [b.firstName, b.lastName].filter(Boolean).join(" ") || b.guestName || "—";
+    html += `<tr>
+      <td style="color:var(--text-muted);font-size:12px;">#${b.id}</td>
+      <td><strong>${name}</strong></td>
+      <td style="font-size:13px;">${getRoomName(b)}</td>
+      <td>${fmtDateTH(b.arrival || b.firstNight)}</td>
+      <td>${fmtDateTH(b.departure || b.lastNight)}</td>
+      <td>${getStatusBadge(b.status)}</td>
+      <td>
+        <button class="btn btn-ghost btn-sm" onclick="viewBooking(${b.id})">ดู</button>
+        <button class="btn btn-outline btn-sm" onclick="editBooking(${b.id})">แก้ไข</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteBooking(${b.id})">ลบ</button>
+      </td>
+    </tr>`;
+  });
+  html += "</tbody></table>";
+  document.getElementById("bookings-table").innerHTML = html;
+}
+
+function filterBookings() {
+  const name = document.getElementById("search-name").value.toLowerCase();
+  const from = document.getElementById("search-from").value;
+  const to = document.getElementById("search-to").value;
+  const status = document.getElementById("search-status").value.toLowerCase();
+
+  const filtered = allBookings.filter(b => {
+    const bName = [b.firstName, b.lastName, b.guestName].filter(Boolean).join(" ").toLowerCase();
+    const arrival = b.arrival || b.firstNight || "";
+    const matchName = !name || bName.includes(name);
+    const matchFrom = !from || arrival >= from;
+    const matchTo = !to || arrival <= to;
+    const matchStatus = !status || (b.status || "").toLowerCase() === status;
+    return matchName && matchFrom && matchTo && matchStatus;
+  });
+  renderBookingsTable(filtered);
+}
+
+// ── Stats ─────────────────────────────────────────────────────
+function updateStats() {
+  const todayStr = fmtDate(today);
+  const sevenAgo = new Date(today);
+  sevenAgo.setDate(sevenAgo.getDate() - 7);
+
+  const checkins = allBookings.filter(b => (b.arrival || b.firstNight) === todayStr);
+  const checkouts = allBookings.filter(b => (b.departure || b.lastNight) === todayStr);
+  const newBk = allBookings.filter(b => {
+    const created = b.createdAt || b.inserted || "";
+    return created >= fmtDate(sevenAgo);
+  });
+
+  document.getElementById("stat-checkin").textContent = checkins.length;
+  document.getElementById("stat-checkout").textContent = checkouts.length;
+  document.getElementById("stat-new").textContent = newBk.length;
+  document.getElementById("stat-avail").textContent = "—";
+
+  renderTodayList("today-checkins", checkins, "check-in");
+  renderTodayList("today-checkouts", checkouts, "check-out");
+}
+
+function renderTodayList(elId, list, type) {
+  const el = document.getElementById(elId);
+  if (!list.length) {
+    el.innerHTML = `<div style="padding:20px;text-align:center;color:var(--text-muted);font-size:13px;">ไม่มี${type}วันนี้</div>`;
+    return;
+  }
+  el.innerHTML = list.slice(0, 6).map(b => {
+    const name = [b.firstName, b.lastName].filter(Boolean).join(" ") || b.guestName || "—";
+    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--cream-dark);">
+      <div>
+        <div style="font-weight:600;font-size:14px;">${name}</div>
+        <div style="font-size:12px;color:var(--text-muted);">${getRoomName(b)}</div>
+      </div>
+      ${getStatusBadge(b.status)}
+    </div>`;
+  }).join("");
+}
+
+// ── Check-in / Out tab ────────────────────────────────────────
+function renderCheckinOut() {
+  const todayStr = fmtDate(today);
+  const checkins = allBookings.filter(b => (b.arrival || b.firstNight) === todayStr);
+  const checkouts = allBookings.filter(b => (b.departure || b.lastNight) === todayStr);
+  renderCheckList("checkin-list", checkins, "checkin");
+  renderCheckList("checkout-list", checkouts, "checkout");
+}
+
+function renderCheckList(elId, list, type) {
+  const el = document.getElementById(elId);
+  if (!list.length) {
+    el.innerHTML = `<div class="empty-state"><div class="emoji">${type === "checkin" ? "🛎️" : "🧳"}</div>ไม่มีรายการ</div>`;
+    return;
+  }
+  el.innerHTML = list.map(b => {
+    const name = [b.firstName, b.lastName].filter(Boolean).join(" ") || b.guestName || "—";
+    const isDone = type === "checkin"
+      ? (b.status || "").toLowerCase() === "checkedin"
+      : (b.status || "").toLowerCase() === "checkedout";
+    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--cream-dark);">
+      <div>
+        <div style="font-weight:600;font-size:14px;">${name}</div>
+        <div style="font-size:12px;color:var(--text-muted);">${getRoomName(b)}</div>
+        ${getStatusBadge(b.status)}
+      </div>
+      ${isDone
+        ? `<span style="color:var(--success);font-size:13px;font-weight:600;">✓ เสร็จแล้ว</span>`
+        : `<button class="btn ${type === "checkin" ? "btn-success" : "btn-primary"} btn-sm"
+            onclick="doCheckAction(${b.id},'${type}')">
+            ${type === "checkin" ? "Check-in" : "Check-out"}
+          </button>`
+      }
+    </div>`;
+  }).join("");
+}
+
+async function doCheckAction(id, type) {
+  const newStatus = type === "checkin" ? "checkedin" : "checkedout";
+  try {
+    await api(`/${type}`, "POST", { id, status: newStatus });
+    showToast(`${type === "checkin" ? "Check-in" : "Check-out"} สำเร็จ`, "success");
+    await loadAllBookings();
+    renderCheckinOut();
+  } catch {
+    showToast("เกิดข้อผิดพลาด", "error");
+  }
+}
+
+// ── Calendar ──────────────────────────────────────────────────
+function renderCalendar() {
+  const dayNames = ["อา", "จ", "อ", "พ", "พฤ", "ศ", "ส"];
+  const namesEl = document.getElementById("cal-day-names");
+  namesEl.innerHTML = dayNames.map(d =>
+    `<div class="cal-day-name">${d}</div>`
+  ).join("");
+
+  const title = new Date(calYear, calMonth, 1).toLocaleDateString("th-TH", { month: "long", year: "numeric" });
+  document.getElementById("cal-title").textContent = title;
+
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+  const prevDays = new Date(calYear, calMonth, 0).getDate();
+
+  let html = "";
+
+  for (let i = firstDay - 1; i >= 0; i--) {
+    html += `<div class="cal-day other-month"><div class="cal-date">${prevDays - i}</div></div>`;
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateStr = `${calYear}-${String(calMonth + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+    const isToday = dateStr === fmtDate(today);
+    const dayBookings = allBookings.filter(b =>
+      (b.arrival || b.firstNight) === dateStr || (b.departure || b.lastNight) === dateStr
+    );
+    const pills = dayBookings.slice(0, 3).map(b => {
+      const name = [b.firstName, b.lastName].filter(Boolean).join(" ") || b.guestName || "Booking";
+      const isCheckout = (b.departure || b.lastNight) === dateStr && (b.arrival || b.firstNight) !== dateStr;
+      return `<div class="cal-booking-pill ${isCheckout ? "checkout-pill" : ""}"
+        onclick="viewBooking(${b.id})" title="${name}">${name}</div>`;
+    }).join("");
+    html += `<div class="cal-day${isToday ? " today" : ""}">
+      <div class="cal-date">${isToday ? `<div class="cal-date" style="background:var(--pumpkin);color:white;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;">${d}</div>` : d}</div>
+      ${pills}
+    </div>`;
+  }
+
+  const remaining = (7 - (firstDay + daysInMonth) % 7) % 7;
+  for (let i = 1; i <= remaining; i++) {
+    html += `<div class="cal-day other-month"><div class="cal-date">${i}</div></div>`;
+  }
+
+  document.getElementById("calendar-body").innerHTML = html;
+}
+
+function prevMonth() {
+  calMonth--;
+  if (calMonth < 0) { calMonth = 11; calYear--; }
+  renderCalendar();
+}
+function nextMonth() {
+  calMonth++;
+  if (calMonth > 11) { calMonth = 0; calYear++; }
+  renderCalendar();
+}
+
+// ── Inventory ─────────────────────────────────────────────────
+async function loadInventory() {
+  const dateEl = document.getElementById("inv-date");
+  const date = dateEl.value || fmtDate(today);
+  document.getElementById("inventory-content").innerHTML = `<div class="loading">กำลังโหลด...</div>`;
+  try {
+    const data = await api(`/inventory?startDate=${date}&endDate=${date}`);
+    const items = data.roomAvailability || data.inventory || data || [];
+    renderInventory(items, date);
+    // Update stat
+    const totalAvail = items.reduce((s, i) => s + (i.availability || 0), 0);
+    document.getElementById("stat-avail").textContent = totalAvail;
+  } catch {
+    document.getElementById("inventory-content").innerHTML = `<div class="empty-state"><div class="emoji">⚠️</div>ไม่สามารถโหลด inventory ได้</div>`;
+  }
+}
+
+function renderInventory(items, date) {
+  if (!items.length) {
+    document.getElementById("inventory-content").innerHTML = `<div class="empty-state"><div class="emoji">🏨</div>ไม่มีข้อมูล inventory</div>`;
+    return;
+  }
+  const html = `<div class="inventory-grid">` +
+    items.map(item => {
+      const avail = item.availability ?? item.numAvailable ?? 0;
+      const total = item.numRooms ?? item.totalRooms ?? avail;
+      const booked = total - avail;
+      const cls = avail === 0 ? "full" : avail < total / 2 ? "partial" : "available";
+      const roomName = item.roomName || item.name || `ห้อง #${item.roomId || item.id}`;
+      return `<div class="inv-card ${cls}">
+        <div class="inv-room-name">${roomName}</div>
+        <div class="inv-avail ${cls}">${avail}</div>
+        <div class="inv-total">ว่าง จาก ${total} ห้อง</div>
+        <div style="margin-top:8px;font-size:11px;color:var(--text-muted);">จอง ${booked} ห้อง</div>
+      </div>`;
+    }).join("") + `</div>`;
+  document.getElementById("inventory-content").innerHTML = html;
+}
+
+// ── View / Edit Booking Modal ─────────────────────────────────
+function viewBooking(id) {
+  const b = allBookings.find(x => x.id == id);
+  if (!b) return;
+  const name = [b.firstName, b.lastName].filter(Boolean).join(" ") || b.guestName || "—";
+  document.getElementById("detail-content").innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div><div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px;">ชื่อผู้จอง</div><div style="font-weight:600;">${name}</div></div>
+      <div><div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px;">สถานะ</div>${getStatusBadge(b.status)}</div>
+      <div><div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px;">Check-in</div><div>${fmtDateTH(b.arrival || b.firstNight)}</div></div>
+      <div><div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px;">Check-out</div><div>${fmtDateTH(b.departure || b.lastNight)}</div></div>
+      <div><div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px;">ห้อง</div><div>${getRoomName(b)}</div></div>
+      <div><div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px;">ผู้เข้าพัก</div><div>${b.numAdult || "—"} คน</div></div>
+      ${b.message ? `<div style="grid-column:1/-1;"><div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px;">หมายเหตุ</div><div>${b.message}</div></div>` : ""}
+    </div>`;
+  document.getElementById("detail-footer").innerHTML = `
+    <button class="btn btn-ghost" onclick="closeModal('detail-modal')">ปิด</button>
+    <button class="btn btn-outline" onclick="closeModal('detail-modal');editBooking(${id})">แก้ไข</button>
+    <button class="btn btn-danger" onclick="closeModal('detail-modal');deleteBooking(${id})">ลบ</button>`;
+  document.getElementById("detail-modal").classList.add("open");
+}
+
+function openAddBooking() {
+  document.getElementById("modal-title").textContent = "เพิ่มการจอง";
+  document.getElementById("modal-save-btn").textContent = "บันทึก";
+  document.getElementById("bk-id").value = "";
+  document.getElementById("bk-firstname").value = "";
+  document.getElementById("bk-lastname").value = "";
+  document.getElementById("bk-checkin").value = fmtDate(today);
+  const tom = new Date(today); tom.setDate(tom.getDate() + 1);
+  document.getElementById("bk-checkout").value = fmtDate(tom);
+  document.getElementById("bk-guests").value = 2;
+  document.getElementById("bk-notes").value = "";
+  document.getElementById("booking-modal").classList.add("open");
+}
+
+function editBooking(id) {
+  const b = allBookings.find(x => x.id == id);
+  if (!b) return;
+  document.getElementById("modal-title").textContent = "แก้ไขการจอง #" + id;
+  document.getElementById("modal-save-btn").textContent = "บันทึกการแก้ไข";
+  document.getElementById("bk-id").value = id;
+  document.getElementById("bk-firstname").value = b.firstName || "";
+  document.getElementById("bk-lastname").value = b.lastName || "";
+  document.getElementById("bk-checkin").value = b.arrival || b.firstNight || "";
+  document.getElementById("bk-checkout").value = b.departure || b.lastNight || "";
+  document.getElementById("bk-guests").value = b.numAdult || 2;
+  document.getElementById("bk-notes").value = b.message || "";
+  if (b.roomId) document.getElementById("bk-room").value = b.roomId;
+  document.getElementById("booking-modal").classList.add("open");
+}
+
+async function saveBooking() {
+  const id = document.getElementById("bk-id").value;
+  const payload = {
+    firstName: document.getElementById("bk-firstname").value,
+    lastName: document.getElementById("bk-lastname").value,
+    arrival: document.getElementById("bk-checkin").value,
+    departure: document.getElementById("bk-checkout").value,
+    roomId: parseInt(document.getElementById("bk-room").value) || undefined,
+    numAdult: parseInt(document.getElementById("bk-guests").value) || 2,
+    message: document.getElementById("bk-notes").value,
+    status: "confirmed"
+  };
+  if (id) payload.id = parseInt(id);
+
+  try {
+    const method = id ? "PUT" : "POST";
+    const path = id ? `/bookings/${id}` : "/bookings";
+    await api(path, method, payload);
+    showToast(id ? "แก้ไขการจองสำเร็จ" : "เพิ่มการจองสำเร็จ", "success");
+    closeModal("booking-modal");
+    await loadAllBookings();
+    renderCalendar();
+  } catch {
+    showToast("เกิดข้อผิดพลาด กรุณาลองใหม่", "error");
+  }
+}
+
+async function deleteBooking(id) {
+  if (!confirm(`ยืนยันการลบการจอง #${id}?`)) return;
+  try {
+    await api(`/bookings/${id}`, "DELETE");
+    showToast("ลบการจองสำเร็จ", "success");
+    await loadAllBookings();
+    renderCalendar();
+  } catch {
+    showToast("เกิดข้อผิดพลาด", "error");
+  }
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove("open");
+}
+
+// ── Tab switching ─────────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
+  document.querySelectorAll(".nav-tab").forEach(t => t.classList.remove("active"));
+  document.getElementById(`tab-${name}`).classList.add("active");
+  event.currentTarget.classList.add("active");
+  if (name === "inventory") loadInventory();
+  if (name === "calendar") renderCalendar();
+}
+</script>
+</body>
+</html>
